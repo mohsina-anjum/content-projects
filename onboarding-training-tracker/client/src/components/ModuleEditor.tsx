@@ -100,7 +100,6 @@ export default function ModuleEditor({
             <Linkified text={module.description} />
           </div>
         )}
-        <div className="module-row-category">{module.category}</div>
       </div>
       <div className="module-row-actions">
         <button type="button" className="btn btn-secondary" onClick={() => setEditing(true)}>

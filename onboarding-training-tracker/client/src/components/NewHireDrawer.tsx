@@ -3,6 +3,7 @@ import { AssignmentWithModule, NewHireStage, NewHireWithProgress } from '../type
 import { api } from '../api/client';
 import AssignmentRow from './AssignmentRow';
 import CertificationReview from './CertificationReview';
+import CollapsibleSection from './CollapsibleSection';
 import ModuleGroup from './ModuleGroup';
 
 interface Props {
@@ -151,23 +152,27 @@ export default function NewHireDrawer({
                     : undefined
                 }
               >
-                {Object.entries(sections).map(([section, sectionRows]) => (
-                  <div
-                    key={section}
-                    className={`category-group${section === 'Introduction' ? ' category-group-intro' : ''}`}
-                  >
-                    <h3 className="category-title">
-                      {section === 'Introduction' ? 'Start Here' : section}
-                    </h3>
-                    {sectionRows.map((assignment) => (
-                      <AssignmentRow
-                        key={assignment.id}
-                        assignment={assignment}
-                        onUpdated={handleAssignmentUpdated}
-                      />
-                    ))}
-                  </div>
-                ))}
+                {Object.entries(sections).map(([section, sectionRows]) => {
+                  const completed = sectionRows.filter((r) => r.status === 'completed').length;
+                  return (
+                    <CollapsibleSection
+                      key={section}
+                      level="section"
+                      className={section === 'Introduction' ? 'collapsible-section-intro' : undefined}
+                      defaultCollapsed={completed === sectionRows.length}
+                      title={section === 'Introduction' ? 'Start Here' : section}
+                      meta={`${completed}/${sectionRows.length}`}
+                    >
+                      {sectionRows.map((assignment) => (
+                        <AssignmentRow
+                          key={assignment.id}
+                          assignment={assignment}
+                          onUpdated={handleAssignmentUpdated}
+                        />
+                      ))}
+                    </CollapsibleSection>
+                  );
+                })}
 
                 {isPrimaryModule && hire.agenda_has_certification_review && (
                   <CertificationReview
